@@ -1,0 +1,22 @@
+[package]
+name = "tasg"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Manage your tasks with `tasg`!"
+repository = "https://github.com/Ce11an/tasg"
+license = "MIT OR Apache-2.0"
+keywords = ["cli", "management", "productivity", "task"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+chrono = { version = "0.4.38", features = ["serde"] }
+clap = { version = "4.5.13", features = ["derive"] }
+dirs = "5.0.1"
+serde = { version = "1.0.204", features = ["derive"] }
+serde_json = "1.0.122"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.0"
+tempfile = "3.6"
