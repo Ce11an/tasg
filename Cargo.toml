@@ -2,7 +2,6 @@
 name = "tasg"
 version = "0.1.0"
 edition = "2021"
-publish = false
 description = "Manage your tasks with `tasg`!"
 repository = "https://github.com/Ce11an/tasg"
 license = "MIT OR Apache-2.0"
