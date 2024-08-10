@@ -2,7 +2,7 @@
 name = "tasg"
 version = "0.1.0"
 edition = "2021"
-description = "Manage your tasks with `tasg`!"
+description = "Manage your tasks with tasg!"
 repository = "https://github.com/Ce11an/tasg"
 license = "MIT OR Apache-2.0"
 keywords = ["cli", "management", "productivity", "task"]
