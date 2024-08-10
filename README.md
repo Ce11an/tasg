@@ -1,8 +1,9 @@
-# tasg
-
-_Manage your tasks with `tasg`!_
-
-`tasg` is a simple command-line task manager written in Rust. It allows you to add, list, complete, and delete tasks, helping you stay organized.
+<p align="center">
+  <img src="https://img.shields.io/crates/l/tasg.svg" alt="license">
+  <a href="https://crates.io/crates/tasg"><img src="https://img.shields.io/crates/v/tasg.svg?colorB=319e8c" alt="Version info"></a><br>
+  <img src="https://github.com/Ce11an/tasg/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status"><br>
+    <i>Manage your tasks with tasg!</i>
+</p>
 
 ## Features
 
@@ -13,57 +14,25 @@ _Manage your tasks with `tasg`!_
 
 ## Installation
 
-1. Ensure you have [Rust](https://www.rust-lang.org/) installed.
-2. Clone the repository:
+Install via Cargo:
 
-   ```sh
-   git clone https://github.com/Ce11an/tasg.git
-   cd tasg
-   ```
-
-3. Build the project:
-
-   ```sh
-   cargo build --release
-   ```
-
-4. The compiled binary will be available in the `target/release` directory. To install it globally, use:
-
-   ```sh
-   cargo install --path .
-   ```
+```sh
+cargo install tasg
+```
 
 ## Uninstallation
+
+First delete the `tasg` storage data (irreversible action):
+
+```sh
+tasg nuke
+```
 
 To uninstall `tasg`, you can use Cargo to remove the installed binary:
 
 ```sh
 cargo uninstall tasg
 ```
-
-### Clean Up Configuration Files
-
-After uninstalling, you may want to remove the configuration directory where `tasg` stores task data:
-
-- **Linux**:
-
-  ```sh
-  rm -rf ~/.config/tasg
-  ```
-
-- **Windows**:
-
-  ```cmd
-  rd /s /q C:\Users\Annie\AppData\Roaming\tasg
-  ```
-
-- **macOS**:
-
-  ```sh
-  rm -rf /Users/Annie/Library/Application\ Support/tasg
-  ```
-
-Adjust the paths as necessary if your username or configuration directory differs.
 
 ## Usage
 
