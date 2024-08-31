@@ -7,7 +7,7 @@ use clap::{Parser, Subcommand};
 /// command-line arguments. It includes the primary command and its associated subcommands.
 ///
 /// The CLI supports various operations such as adding tasks, listing tasks, completing tasks,
-/// and deleting tasks.
+/// deleting tasks, and editing tasks.
 #[derive(Parser, Debug)]
 #[command(name = "tasg", about, version, author)]
 pub struct Cli {
@@ -22,7 +22,7 @@ pub struct Cli {
 ///
 /// The `Commands` enum defines the subcommands supported by the Tasg application. Each variant
 /// corresponds to a specific action that the user can perform, such as adding, listing,
-/// completing, or deleting tasks.
+/// completing, deleting, or editing tasks.
 ///
 /// # Variants
 ///
@@ -30,6 +30,7 @@ pub struct Cli {
 /// - `List` - Lists tasks, with an option to show all tasks, including completed ones.
 /// - `Complete` - Marks a task as complete by its ID.
 /// - `Delete` - Deletes a task by its ID.
+/// - `Edit` - Edits the description of an existing task by its ID.
 #[derive(Subcommand, Debug)]
 pub enum Commands {
     /// Add a new task to the task list.
@@ -92,7 +93,30 @@ pub enum Commands {
         id: u32,
     },
 
-    /// Nuke all of the tasks
+    /// Edit an existing task's description.
+    ///
+    /// This subcommand allows you to modify the description or mark the task as completed.
+    ///
+    /// # Arguments
+    ///
+    /// - `id` - The ID of the task to edit. Must be a positive integer.
+    /// - `description` - The new description of the task.
+    Edit {
+        /// The ID of the task to edit.
+        ///
+        /// This argument specifies the ID of the task that should be edited.
+        #[arg(value_parser = clap::value_parser!(u32).range(1..))]
+        id: u32,
+
+        /// The new description of the task.
+        ///
+        /// This argument allows the user to provide a new text description for the task.
+        /// If not provided, the description will remain unchanged.
+        #[arg(short, long)]
+        description: Option<String>,
+    },
+
+    /// Nuke all of the tasks.
     ///
     /// This subcommand will delete all your tasks - use with caution!
     Nuke,

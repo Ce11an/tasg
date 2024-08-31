@@ -221,3 +221,44 @@ fn test_special_characters_in_task_description() {
     let assert = cmd.arg("list").assert();
     assert.success().stdout(predicate::str::contains(special_description));
 }
+
+#[test]
+fn test_edit_task_description() {
+    let (mut cmd, temp_dir) = setup();
+    // Add a task
+    cmd.arg("add").arg("Test task").assert().success();
+    // Create a new command instance to edit the task
+    let mut cmd = prepare_cmd(&temp_dir);
+    // Edit the task
+    let edit_task_description = "Edit_task";
+    cmd.arg("edit").arg("1").arg("--description").arg(edit_task_description).assert().success();
+
+    // Verify the task was edited
+    let mut cmd = prepare_cmd(&temp_dir);
+    let assert = cmd.arg("list").assert();
+    assert.success().stdout(predicate::str::contains(edit_task_description));
+}
+
+#[test]
+fn test_edit_task_no_description() {
+    let (mut cmd, temp_dir) = setup();
+    // Add a task
+    let test_task_description = "Test task";
+    cmd.arg("add").arg(test_task_description).assert().success();
+    // Create a new command instance to edit the task
+    let mut cmd = prepare_cmd(&temp_dir);
+    // Edit the task without description
+    cmd.arg("edit").arg("1").assert().success();
+
+    // Verify the task was not edited
+    let mut cmd = prepare_cmd(&temp_dir);
+    let assert = cmd.arg("list").assert();
+    assert.success().stdout(predicate::str::contains(test_task_description));
+}
+
+#[test]
+fn test_edit_non_existent_task() {
+    let (mut cmd, _temp_dir) = setup();
+    let assert = cmd.arg("edit").arg("9999").assert();
+    assert.failure().stderr(predicate::str::contains("Task with ID 9999 not found"));
+}

@@ -60,6 +60,18 @@ pub trait Store {
     ///
     /// * `&str` containing the file path to the store.
     fn path(&self) -> &str;
+
+    /// Edits an existing task's description.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The ID of the task to edit.
+    /// * `description` - The new description of the task. If `None`, the description remains unchanged.
+    ///
+    /// # Returns
+    ///
+    /// * `Result<(), TaskError>` - Returns `Ok(())` if the task is successfully edited, or a `TaskError` if the task is not found.
+    fn edit(&self, id: u32, description: Option<String>) -> Result<(), TaskError>;
 }
 
 /// JSON-based implementation of the `Store` trait.
@@ -193,6 +205,19 @@ impl Store for JsonStore {
     fn path(&self) -> &str {
         &self.path
     }
+
+    fn edit(&self, id: u32, description: Option<String>) -> Result<(), TaskError> {
+        let mut tasks = self.load()?;
+        if let Some(task) = tasks.iter_mut().find(|t| t.id == id) {
+            if let Some(new_description) = description {
+                task.description = new_description;
+            }
+            task.updated_at = chrono::Local::now();
+            self.save(&tasks)
+        } else {
+            Err(TaskError::NotFound(id))
+        }
+    }
 }
 
 #[cfg(test)]
@@ -319,5 +344,66 @@ mod tests {
         } else {
             panic!("Expected TaskError::NotFound");
         }
+    }
+
+    /// Tests the `edit` method of `JsonStore`.
+    ///
+    /// This test verifies that a task's description can be successfully edited in the JSON store.
+    #[test]
+    fn test_edit_task() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("tasks.json");
+        let store = JsonStore::new(file_path.to_str().unwrap().to_string());
+
+        let task = Task::new(1, String::from("Original task"));
+        store.add(task).unwrap();
+
+        store.edit(1, Some("Edited task".to_string())).unwrap();
+
+        let data = fs::read_to_string(&store.path).unwrap();
+        let tasks: Vec<Task> = serde_json::from_str(&data).unwrap();
+
+        assert_eq!(tasks.len(), 1);
+        assert_eq!(tasks[0].description, "Edited task");
+    }
+
+    /// Tests the `edit` method of `JsonStore` when the task is not found.
+    ///
+    /// This test verifies that an error is returned when attempting to edit a non-existent task.
+    #[test]
+    fn test_edit_task_not_found() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("tasks.json");
+        let store = JsonStore::new(file_path.to_str().unwrap().to_string());
+
+        let result = store.edit(1, Some("New description".to_string()));
+        assert!(result.is_err());
+        if let Err(TaskError::NotFound(id)) = result {
+            assert_eq!(id, 1);
+        } else {
+            panic!("Expected TaskError::NotFound");
+        }
+    }
+
+    /// Tests the `edit` method of `JsonStore` when no description is provided.
+    ///
+    /// This test verifies that a task's description does not change if an description is not
+    /// provided.
+    #[test]
+    fn test_edit_task_no_description() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("tasks.json");
+        let store = JsonStore::new(file_path.to_str().unwrap().to_string());
+
+        let task = Task::new(1, String::from("Original task"));
+        store.add(task).unwrap();
+
+        store.edit(1, None).unwrap();
+
+        let data = fs::read_to_string(&store.path).unwrap();
+        let tasks: Vec<Task> = serde_json::from_str(&data).unwrap();
+
+        assert_eq!(tasks.len(), 1);
+        assert_eq!(tasks[0].description, "Original task");
     }
 }
