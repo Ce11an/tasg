@@ -11,6 +11,7 @@
 - **List Tasks**: View all tasks or filter to see only incomplete tasks.
 - **Complete Tasks**: Mark tasks as complete.
 - **Delete Tasks**: Remove tasks when they are no longer needed.
+- **Edit Tasks**: Edit the descriptions of tasks.
 
 ## Installation
 
@@ -74,6 +75,14 @@ Remove a task by specifying its ID:
 
 ```sh
 tasg delete <task_id>
+```
+
+### Edit a Task
+
+Edit a task by specifying its ID and a description:
+
+```sh
+tasg edit <task_id> --description "Your edited description"
 ```
 
 ### Nuke All Tasks

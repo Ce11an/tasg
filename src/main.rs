@@ -135,6 +135,9 @@ fn run(cli: Cli, store: JsonStore) -> Result<(), TaskError> {
                 println!("Operation cancelled.");
             }
         }
+        Commands::Edit { id, description } => {
+            store.edit(id, description)?;
+        }
     }
 
     Ok(())
